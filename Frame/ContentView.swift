@@ -9,80 +9,85 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
+    @State private var blurIntensity: CGFloat = 0
+    @State private var hueAdjust: Double = 0
+    @State private var contrastAdjust: Double = 1
+    @State private var opacityAdjust: Double = 1
+    @State private var brightnessAdjust: Double = 0
+    @State private var saturationAdjust: Double = 1
+    
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        VStack {
+            Text ("Frame" )
+                .font (. largeTitle)
+            
+            Spacer()
+            Spacer()
+            Spacer()
+            
+            Image ("TestImage")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .opacity(opacityAdjust)
+                .hueRotation(Angle (degrees: hueAdjust))
+                .brightness(brightnessAdjust)
+                .contrast(contrastAdjust)
+                //.colorInvert ()
+                .saturation(saturationAdjust)
+                .blur(radius: blurIntensity)
+            
+            Spacer ()
+            
+            VStack {
+                // Adjust blur intensity
+                HStack(spacing: 20) {
+                    Text ("Blur:")
+                        .foregroundColor (Color (.systemBlue) )
+                    Slider (value: $blurIntensity, in: 0...10)
+                }.padding(.horizontal, 50)
+                
+                // Adjust brightness
+                HStack(spacing: 20) {
+                    Text("Brightness:")
+                        .foregroundColor (Color (.systemBlue) )
+                    Slider (value: $brightnessAdjust, in: 0...1)
+                }.padding (.horizontal, 50)
+                
+                // Adjust contrast
+                HStack(spacing: 20) {
+                    Text ("Contrast:")
+                        .foregroundColor (Color (.systemBlue))
+                    Slider (value: $contrastAdjust, in: 0...2)
+                }.padding (.horizontal, 50)
+                
+                // Adjust saturation
+                HStack(spacing: 20) {
+                    Text ("Saturation:")
+                        .foregroundColor(Color (.systemBlue) )
+                    Slider (value: $saturationAdjust, in: 0...1)
+                }.padding (.horizontal, 50)
+                
+                // Adjust huerotation
+                HStack(spacing: 20) {
+                    Text ("Rotate Chroma:")
+                        .foregroundColor(Color (.systemBlue) )
+                    Slider (value: $hueAdjust, in: 0...90)
+                }.padding (.horizontal, 50)
+                
+                // Adjust opacity
+                HStack(spacing: 20) {
+                    Text ("Transparency:")
+                        .foregroundColor (Color (.systemBlue))
+                    Slider (value: $opacityAdjust, in: 0...1)
+                }.padding (.horizontal, 50)
             }
         }
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView()
+            .preferredColorScheme(.dark)
     }
 }
