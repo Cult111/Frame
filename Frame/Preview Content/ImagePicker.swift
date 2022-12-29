@@ -4,7 +4,7 @@
 //
 //  Created by Max Berghaus on 29.11.22.
 //
-
+// Script to load image form gallery
 import SwiftUI
 
 struct ImagePicker: UIViewControllerRepresentable {

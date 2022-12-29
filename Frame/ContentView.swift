@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    
+
     @State var showImagePicker: Bool = false
     @State var showActionSheet: Bool = false
     @State var image: Image?
@@ -90,10 +90,24 @@ struct ContentView: View {
                     
                     // Show the Button to change the Image
                     CameraButtonView(showActionSheet: $showActionSheet)
-                    
+                    // Button to Save the edited
+/*                    Button {
+                        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+                        
+                    } label: {
+                        HStack {
+                            Image(systemName: "photo.on.rectangle.angled")
+                            Text("Add to Photos")
+                            
+                        }
+                        .font(.title)
+                        .foregroundColor(.purple)
+                        
+                    }
+  */
                     
                 }
-                // Shows the selection of Camera and Photo Gallers poping up from the bottom
+                // Shows the selection of Camera and Photo Gallery poping up from the bottom
                 .actionSheet(isPresented: $showActionSheet, content: { () -> ActionSheet in ActionSheet(title: Text("Select Image"), message : Text("Please selcet an image from the image gallery or use the camera"), buttons: [
                     ActionSheet.Button.default(Text("Camera"), action: {
                         self.sourceType = 0
@@ -110,7 +124,6 @@ struct ContentView: View {
                     ImagePicker(isVisible: $showImagePicker, image: $image, sourceType: sourceType)
                 }
             }
-
         }
     }
 }
