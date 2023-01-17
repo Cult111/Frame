@@ -15,6 +15,10 @@ struct ContentView: View {
     @State private var image: Image?
     @State private var filterIntesity = 0.5
     
+    
+    @State private var grayscaleIntesity = 0.0
+    
+    
     @State private var showingImagePicker = false
     @State private var inputImage: UIImage?
     @State private var processedImage: UIImage?
@@ -37,6 +41,9 @@ struct ContentView: View {
                     image?
                         .resizable()
                         .scaledToFit()
+                    
+                    
+                    
                 }
                 .onTapGesture {
                     showingImagePicker = true
@@ -45,6 +52,7 @@ struct ContentView: View {
                     Text("Intesity")
                     Slider(value: $filterIntesity)
                         .onChange(of: filterIntesity){ _ in applyProcessing() }
+                    
                 }
                 .padding(.vertical)
                 
@@ -71,6 +79,20 @@ struct ContentView: View {
                 Button("Sepia Tone"){ setFilter(CIFilter.sepiaTone())}
                 Button("Unsharp Mask"){ setFilter(CIFilter.unsharpMask())}
                 Button("Vingette"){ setFilter(CIFilter.vignette())}
+                // Grayscale is a filter without a value that can be set
+                Button("Grayscale"){
+                    guard let inputImage = inputImage else { return }
+                    let beginImage = CIImage(image: inputImage)
+                    
+                    let filter = GrayscaleFilter()
+                    filter.inputImage = beginImage
+                    
+                    guard let outputImage = filter.outputImage else { return }
+                    if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
+                        let uiImage = UIImage(cgImage: cgimg)
+                        image = Image(uiImage: uiImage )
+                        processedImage = uiImage
+                    }}
                 Button("Cancel", role: .cancel) { }
                 
             }

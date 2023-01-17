@@ -4,7 +4,7 @@
 //
 //  Created by Max Berghaus on 07.01.23.
 //
-
+// Function to save a image to the cameraroll
 import UIKit
 
 class ImageSaver: NSObject{

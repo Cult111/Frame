@@ -10,6 +10,8 @@
 		507093F92962FEA30028942D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507093F82962FEA30028942D /* ImagePicker.swift */; };
 		5076B1B329699FF80032CCB0 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5076B1B229699FF80032CCB0 /* ImageSaver.swift */; };
 		508BB1F72936390700B3530E /* CameraButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508BB1F62936390700B3530E /* CameraButtonView.swift */; };
+		50D9ECD829756FCB000833A7 /* GrayscaleFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50D9ECD729756FCB000833A7 /* GrayscaleFilter.swift */; };
+		50D9ECDA29757CA5000833A7 /* GrayscaleFilterKernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 50D9ECD929757CA5000833A7 /* GrayscaleFilterKernel.metal */; };
 		50E8776C29225BEE00604757 /* FrameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E8776B29225BEE00604757 /* FrameApp.swift */; };
 		50E8776E29225BEE00604757 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E8776D29225BEE00604757 /* ContentView.swift */; };
 		50E8777029225BEF00604757 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50E8776F29225BEF00604757 /* Assets.xcassets */; };
@@ -42,6 +44,8 @@
 		507093F82962FEA30028942D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		5076B1B229699FF80032CCB0 /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		508BB1F62936390700B3530E /* CameraButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButtonView.swift; sourceTree = "<group>"; };
+		50D9ECD729756FCB000833A7 /* GrayscaleFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleFilter.swift; sourceTree = "<group>"; };
+		50D9ECD929757CA5000833A7 /* GrayscaleFilterKernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GrayscaleFilterKernel.metal; sourceTree = "<group>"; };
 		50E8776829225BEE00604757 /* Frame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Frame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50E8776B29225BEE00604757 /* FrameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameApp.swift; sourceTree = "<group>"; };
 		50E8776D29225BEE00604757 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 				50E8777629225BEF00604757 /* Frame.xcdatamodeld */,
 				50E8777129225BEF00604757 /* Preview Content */,
 				508BB1F62936390700B3530E /* CameraButtonView.swift */,
+				50D9ECD729756FCB000833A7 /* GrayscaleFilter.swift */,
+				50D9ECD929757CA5000833A7 /* GrayscaleFilterKernel.metal */,
 			);
 			path = Frame;
 			sourceTree = "<group>";
@@ -273,9 +279,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				508BB1F72936390700B3530E /* CameraButtonView.swift in Sources */,
+				50D9ECDA29757CA5000833A7 /* GrayscaleFilterKernel.metal in Sources */,
 				50E8777529225BEF00604757 /* Persistence.swift in Sources */,
 				50E8777829225BEF00604757 /* Frame.xcdatamodeld in Sources */,
 				5076B1B329699FF80032CCB0 /* ImageSaver.swift in Sources */,
+				50D9ECD829756FCB000833A7 /* GrayscaleFilter.swift in Sources */,
 				507093F92962FEA30028942D /* ImagePicker.swift in Sources */,
 				50E8776E29225BEE00604757 /* ContentView.swift in Sources */,
 				50E8776C29225BEE00604757 /* FrameApp.swift in Sources */,
@@ -452,6 +460,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				MTLLINKER_FLAGS = "-cikernel";
+				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxberghaus.Frame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -483,6 +493,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				MTLLINKER_FLAGS = "-cikernel";
+				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxberghaus.Frame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
