@@ -93,6 +93,22 @@ struct ContentView: View {
                         image = Image(uiImage: uiImage )
                         processedImage = uiImage
                     }}
+                Button("Customfilter"){
+                    guard let inputImage = inputImage else { return }
+                    let beginImage = CIImage(image: inputImage)
+                    
+                    let filter = CustomFilter()
+                    filter.inputImage = beginImage
+                    filter.inputKeys
+                    guard let outputImage = filter.outputImage else { return }
+                    if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
+                        let uiImage = UIImage(cgImage: cgimg)
+                        image = Image(uiImage: uiImage )
+                        processedImage = uiImage
+                    }}
+                
+                
+                
                 Button("Cancel", role: .cancel) { }
                 
             }
