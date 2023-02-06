@@ -15,10 +15,6 @@ struct ContentView: View {
     @State private var image: Image?
     @State private var filterIntesity = 0.5
     
-    
-    @State private var grayscaleIntesity = 0.0
-    
-    
     @State private var showingImagePicker = false
     @State private var inputImage: UIImage?
     @State private var processedImage: UIImage?
@@ -75,7 +71,6 @@ struct ContentView: View {
                 Button("Crystallize"){ setFilter(CIFilter.crystallize())}
                 Button("Edges"){ setFilter(CIFilter.edges())}
                 Button("Gaussian Blur"){ setFilter(CIFilter.gaussianBlur())}
-                Button("Pixellate"){ setFilter(CIFilter.pixellate())}
                 Button("Sepia Tone"){ setFilter(CIFilter.sepiaTone())}
                 Button("Unsharp Mask"){ setFilter(CIFilter.unsharpMask())}
                 Button("Vingette"){ setFilter(CIFilter.vignette())}
@@ -93,22 +88,35 @@ struct ContentView: View {
                         image = Image(uiImage: uiImage )
                         processedImage = uiImage
                     }}
-                Button("Customfilter"){
+                Button("BrightnessFilter"){
                     guard let inputImage = inputImage else { return }
                     let beginImage = CIImage(image: inputImage)
                     
-                    let filter = CustomFilter()
+                    let filter = BrightnessFilter()
                     filter.inputImage = beginImage
-                    filter.inputKeys
+                    filter.inputBrightnessFactor = 0.0
+                    
                     guard let outputImage = filter.outputImage else { return }
                     if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
                         let uiImage = UIImage(cgImage: cgimg)
                         image = Image(uiImage: uiImage )
                         processedImage = uiImage
                     }}
-                
-                
-                
+                Button("ThresholdFilter"){
+                    guard let inputImage = inputImage else { return }
+                    let beginImage = CIImage(image: inputImage)
+                    
+                    let filter = ThresholdFilter()
+                    filter.inputImage = beginImage
+                    filter.threshold = 1
+                    
+                    guard let outputImage = filter.outputImage else { return }
+                    if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
+                        let uiImage = UIImage(cgImage: cgimg)
+                        image = Image(uiImage: uiImage )
+                        processedImage = uiImage
+                    }
+                }
                 Button("Cancel", role: .cancel) { }
                 
             }

@@ -12,7 +12,7 @@ class GrayscaleFilter: CIFilter {
     dynamic var inputImage: CIImage?
     
     static var kernel: CIColorKernel = { () -> CIColorKernel in
-        let url = Bundle.main.url(forResource: "default",
+        let url = Bundle.main.url(forResource: "CustomFilterKernel",
                                   withExtension: "metallib")! //1
         let data = try! Data(contentsOf: url)
         return try! CIColorKernel(functionName: "grayscaleFilterKernel",

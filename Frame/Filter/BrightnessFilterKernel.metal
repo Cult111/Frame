@@ -13,14 +13,16 @@ using namespace metal;
 extern "C" {
   namespace coreimage {
       
-      float4 brightenEffect (sampler src , float k){
+      float4 brightnessFilterKernel (sampler src , float inputBrightnessFactor){
           float4 currentSource = sample (src, samplerCoord(src));
-          currentSource.rgb = currentSource.rgb + k * currentSource.a;
+          
+//          float4 input = src.sample(src.coord());
+          
+          currentSource.rgb = currentSource.rgb + inputBrightnessFactor * currentSource.a;
+//          float3 rgb = input.rgb * inputBrightnessFactor;
+          
           return currentSource;
       }
         
     }
 }
-      
-
-
