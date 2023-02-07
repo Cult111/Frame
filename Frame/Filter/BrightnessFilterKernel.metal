@@ -16,10 +16,7 @@ extern "C" {
       float4 brightnessFilterKernel (sampler src , float inputBrightnessFactor){
           float4 currentSource = sample (src, samplerCoord(src));
           
-//          float4 input = src.sample(src.coord());
-          
           currentSource.rgb = currentSource.rgb + inputBrightnessFactor * currentSource.a;
-//          float3 rgb = input.rgb * inputBrightnessFactor;
           
           return currentSource;
       }
