@@ -4,6 +4,7 @@
 //
 //  Created by Max Berghaus on 02.01.23.
 //
+// function to pick a image from the camera roll
 
 import PhotosUI
 import SwiftUI
