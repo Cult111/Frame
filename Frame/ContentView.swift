@@ -68,16 +68,11 @@ struct ContentView: View {
                 ImagePicker(image: $inputImage)
             }
             .confirmationDialog("Select a filter", isPresented: $showingFilterSheets){
-                Button("Crystallize"){ setFilter(CIFilter.crystallize())}
-                Button("Edges"){ setFilter(CIFilter.edges())}
-                Button("Gaussian Blur"){ setFilter(CIFilter.gaussianBlur())}
-                Button("Sepia Tone"){ setFilter(CIFilter.sepiaTone())}
-                Button("Unsharp Mask"){ setFilter(CIFilter.unsharpMask())}
-                Button("Vingette"){ setFilter(CIFilter.vignette())}
                 // Grayscale is a filter without a value that can be set
                 Button("Grayscale"){
                     guard let inputImage = inputImage else { return }
                     let beginImage = CIImage(image: inputImage)
+                    
                     
                     let filter = GrayscaleFilter()
                     filter.inputImage = beginImage
@@ -110,6 +105,7 @@ struct ContentView: View {
                     filter.inputImage = beginImage
                     filter.threshold = 1
                     
+
                     guard let outputImage = filter.outputImage else { return }
                     if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
                         let uiImage = UIImage(cgImage: cgimg)
@@ -145,18 +141,7 @@ struct ContentView: View {
     }
     
     func applyProcessing(){
-        let inputKeys = currentFilter.inputKeys
-        
-        if inputKeys.contains(kCIInputIntensityKey) {
-            currentFilter.setValue(filterIntesity , forKey: kCIInputIntensityKey)
-        }
-        if inputKeys.contains(kCIInputRadiusKey) {
-            currentFilter.setValue(filterIntesity * 200, forKey: kCIInputRadiusKey)
-        }
-        if inputKeys.contains(kCIInputScaleKey) {
-            currentFilter.setValue(filterIntesity * 10, forKey: kCIInputScaleKey)
-        }
-        
+
         guard let outputImage = currentFilter.outputImage else { return }
         //converting the UIImage to SwiftUi Image, so it can be displayed
         if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
