@@ -10,16 +10,20 @@ import CoreData
 import CoreImage
 import CoreImage.CIFilterBuiltins
 
+
+
 struct ContentView: View {
-    
+
     @State private var image: Image?
-    @State private var filterIntesity = 0.5
+    @State private var brightnessFactor: Float = 0
+    @State private var grayscaleFactor: Float = 0
     
     @State private var showingImagePicker = false
     @State private var inputImage: UIImage?
     @State private var processedImage: UIImage?
     
-    @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
+    @State private var currentFilter: CIFilter = BrightnessFilter()
+
     let context = CIContext()
     
     @State private var showingFilterSheets = false
@@ -44,11 +48,15 @@ struct ContentView: View {
                 .onTapGesture {
                     showingImagePicker = true
                 }
-                HStack{
-                    Text("Intesity")
-                    Slider(value: $filterIntesity)
-                        .onChange(of: filterIntesity){ _ in applyProcessing() }
-                    
+                VStack{
+                    Text("Brightness")
+                    Slider(value: $brightnessFactor, in: -1...1)
+                        .onChange(of: brightnessFactor){ _ in setFilter(BrightnessFilter())}
+                        .onChange(of: brightnessFactor){ _ in applyProcessing()}
+                    Text("Grayscale")
+                    Slider(value: $grayscaleFactor, in: 0...1)
+                        .onChange(of: grayscaleFactor){ _ in setFilter(GrayscaleFilter())}
+                        .onChange(of: grayscaleFactor){ _ in applyProcessing()}
                 }
                 .padding(.vertical)
                 
@@ -89,7 +97,7 @@ struct ContentView: View {
                     
                     let filter = BrightnessFilter()
                     filter.inputImage = beginImage
-                    filter.inputBrightnessFactor = 0.0
+                    filter.inputBrightnessFactor = brightnessFactor
                     
                     guard let outputImage = filter.outputImage else { return }
                     if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
@@ -103,7 +111,7 @@ struct ContentView: View {
                     
                     let filter = ThresholdFilter()
                     filter.inputImage = beginImage
-                    filter.threshold = 1
+                    filter.inputThresholdFactor = 1
                     
 
                     guard let outputImage = filter.outputImage else { return }
@@ -123,6 +131,7 @@ struct ContentView: View {
         guard let inputImage = inputImage else { return }
         let beginImage = CIImage(image: inputImage)
         currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
+
         applyProcessing()
     }
     
@@ -141,7 +150,15 @@ struct ContentView: View {
     }
     
     func applyProcessing(){
-
+        
+        let inputKeys = currentFilter.inputKeys
+        if inputKeys.contains("inputBrightnessFactor"){
+            currentFilter.setValue(brightnessFactor, forKey: "inputBrightnessFactor")
+        }
+        if inputKeys.contains("inputGrayscaleFactor"){
+            currentFilter.setValue(grayscaleFactor, forKey: "inputGrayscaleFactor")
+        }
+            
         guard let outputImage = currentFilter.outputImage else { return }
         //converting the UIImage to SwiftUi Image, so it can be displayed
         if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
