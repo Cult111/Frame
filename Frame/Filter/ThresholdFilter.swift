@@ -21,14 +21,54 @@ class ThresholdFilter: CIFilter {
     return kernel
   }()
   
-  var inputImage: CIImage?
-  var threshold: Float = 0.5
-  override var outputImage: CIImage? {
+    var inputImage: CIImage?
+    var inputThresholdFactor: Float = 0.0
+    
+    override var attributes: [String : Any] {
+        return [
+            kCIAttributeFilterDisplayName: "ThresholdFilter",
+
+            "inputImage": [kCIAttributeIdentity: 0,
+                           kCIAttributeClass: "CIImage",
+                           kCIAttributeDisplayName: "Image",
+                           kCIAttributeType: kCIAttributeTypeImage],
+
+            "inputThresholdFactor": [kCIAttributeIdentity: 0,
+                                      kCIAttributeClass: "NSNumber",
+                                      kCIAttributeDisplayName: "Threshold Factor",
+                                      kCIAttributeDefault: 0,
+                                      kCIAttributeMin: 0,
+                                      kCIAttributeSliderMin: 0,
+                                      kCIAttributeSliderMax: 1,
+                                      kCIAttributeType: kCIAttributeTypeScalar]
+        ]
+    }
+    
+    override init() {
+        super.init()
+    }
+
+    override func setValue(_ value: Any?, forKey key: String) {
+        switch key {
+            case "inputImage":
+            inputImage = value as? CIImage
+            case "inputThresholdFactor":
+                inputThresholdFactor = value as! Float
+            default:
+                break
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override var outputImage: CIImage? {
     guard let inputImage = inputImage else { return .none }
     return kernel.apply(
       extent: inputImage.extent,
       roiCallback: {(index, rect) -> CGRect in return rect},
-      arguments: [inputImage, threshold]
+      arguments: [inputImage, inputThresholdFactor]
     )
   }
 }

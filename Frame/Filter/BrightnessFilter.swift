@@ -20,9 +20,51 @@ class BrightnessFilter: CIFilter {
       
       return kernel
     }()
+
     
     var inputImage: CIImage?
     var inputBrightnessFactor: Float = 0.5
+    
+    override var attributes: [String : Any] {
+        return [
+            kCIAttributeFilterDisplayName: "BrightnessFilter",
+
+            "inputImage": [kCIAttributeIdentity: 0,
+                           kCIAttributeClass: "CIImage",
+                           kCIAttributeDisplayName: "Image",
+                           kCIAttributeType: kCIAttributeTypeImage],
+
+            "inputBrightnessFactor": [kCIAttributeIdentity: 0,
+                                      kCIAttributeClass: "NSNumber",
+                                      kCIAttributeDisplayName: "Brightness Factor",
+                                      kCIAttributeDefault: 0,
+                                      kCIAttributeMin: 0,
+                                      kCIAttributeSliderMin: -1,
+                                      kCIAttributeSliderMax: 1,
+                                      kCIAttributeType: kCIAttributeTypeScalar]
+        ]
+    }
+    
+    override init() {
+        super.init()
+    }
+
+    override func setValue(_ value: Any?, forKey key: String) {
+        switch key {
+            case "inputImage":
+            inputImage = value as? CIImage
+            case "inputBrightnessFactor":
+                inputBrightnessFactor = value as! Float
+            default:
+                break
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+
     override var outputImage: CIImage? {
       guard let inputImage = inputImage else { return .none }
         return kernel.apply(
