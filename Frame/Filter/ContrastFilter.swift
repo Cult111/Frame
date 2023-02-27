@@ -1,43 +1,45 @@
 //
-//  GrayscaleFilter.swift
+//  ContrastFilter.swift
 //  Frame
 //
-//  Created by Max Berghaus on 16.01.23.
+//  Created by Max Berghaus on 27.02.23.
 //
 
 import Foundation
 import CoreImage
 
-class GrayscaleFilter: CIFilter {
+
+class ContrastFilter: CIFilter {
     private lazy var kernel: CIKernel = {
-        guard let url = Bundle.main.url(forResource: "default", withExtension: "metallib"), let data = try? Data(contentsOf: url) else {
-            fatalError("Unable to load metallib")
-        }
-        
-        let name = "grayscaleFilterKernel"
-        guard let kernel = try? CIKernel(functionName: name, fromMetalLibraryData: data) else { fatalError("Unable to create the CIColorKernel for filter \(name)") }
-        
-        return kernel
+      guard let url = Bundle.main.url(forResource: "default", withExtension: "metallib"), let data = try? Data(contentsOf: url) else {
+        fatalError("Unable to load metallib")
+      }
+      
+      let name = "contrastFilterKernel"
+      guard let kernel = try? CIKernel(functionName: name, fromMetalLibraryData: data) else { fatalError("Unable to create the CIColorKernel for filter \(name)") }
+      
+      return kernel
     }()
+
     
     var inputImage: CIImage?
-    var inputGrayscaleFactor: Float = 0.0
+    var inputContrastFactor: Float = 0
     
     override var attributes: [String : Any] {
         return [
-            kCIAttributeFilterDisplayName: "GrayscaleFilter",
+            kCIAttributeFilterDisplayName: "ContrastFilter",
 
             "inputImage": [kCIAttributeIdentity: 0,
                            kCIAttributeClass: "CIImage",
                            kCIAttributeDisplayName: "Image",
                            kCIAttributeType: kCIAttributeTypeImage],
 
-            "inputGrayscaleFactor": [kCIAttributeIdentity: 0,
+            "inputContrastFactor": [kCIAttributeIdentity: 0,
                                       kCIAttributeClass: "NSNumber",
-                                      kCIAttributeDisplayName: "Grayscale Factor",
+                                      kCIAttributeDisplayName: "Contrast Factor",
                                       kCIAttributeDefault: 0,
                                       kCIAttributeMin: 0,
-                                      kCIAttributeSliderMin: 0,
+                                      kCIAttributeSliderMin: -1,
                                       kCIAttributeSliderMax: 1,
                                       kCIAttributeType: kCIAttributeTypeScalar]
         ]
@@ -51,8 +53,8 @@ class GrayscaleFilter: CIFilter {
         switch key {
             case "inputImage":
             inputImage = value as? CIImage
-            case "inputGrayscaleFactor":
-            inputGrayscaleFactor = value as! Float
+            case "inputContrastFactor":
+            inputContrastFactor = value as! Float
             default:
                 break
         }
@@ -62,13 +64,14 @@ class GrayscaleFilter: CIFilter {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+
     override var outputImage: CIImage? {
-        guard let inputImage = inputImage else { return .none }
+      guard let inputImage = inputImage else { return .none }
         return kernel.apply(
-            extent: inputImage.extent,
-            roiCallback: {(index, rect) -> CGRect in return rect},
-            arguments: [inputImage, inputGrayscaleFactor]
-        )
+        extent: inputImage.extent,
+        roiCallback: {(index, rect) -> CGRect in return rect},
+        arguments: [inputImage, inputContrastFactor]
+      )
     }
 }
+

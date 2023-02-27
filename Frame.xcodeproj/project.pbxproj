@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5062CD7129ACE02200F961DF /* ContrastFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5062CD7029ACE02200F961DF /* ContrastFilter.swift */; };
+		5062CD7329ACE03200F961DF /* ContrastFilterKernal.metal in Sources */ = {isa = PBXBuildFile; fileRef = 5062CD7229ACE03200F961DF /* ContrastFilterKernal.metal */; };
 		507093F92962FEA30028942D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507093F82962FEA30028942D /* ImagePicker.swift */; };
 		50729AF729912648001E5CD1 /* ThresholdFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50729AF629912648001E5CD1 /* ThresholdFilter.swift */; };
 		50729AF92991265C001E5CD1 /* ThresholdFilterKernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 50729AF82991265C001E5CD1 /* ThresholdFilterKernel.metal */; };
@@ -45,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5062CD7029ACE02200F961DF /* ContrastFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContrastFilter.swift; sourceTree = "<group>"; };
+		5062CD7229ACE03200F961DF /* ContrastFilterKernal.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ContrastFilterKernal.metal; sourceTree = "<group>"; };
 		507093F82962FEA30028942D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		50729AF629912648001E5CD1 /* ThresholdFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdFilter.swift; sourceTree = "<group>"; };
 		50729AF82991265C001E5CD1 /* ThresholdFilterKernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ThresholdFilterKernel.metal; sourceTree = "<group>"; };
@@ -102,6 +106,8 @@
 				508C4C0F297FF594003ADCDD /* BrightnessFilterKernel.metal */,
 				50729AF629912648001E5CD1 /* ThresholdFilter.swift */,
 				50729AF82991265C001E5CD1 /* ThresholdFilterKernel.metal */,
+				5062CD7029ACE02200F961DF /* ContrastFilter.swift */,
+				5062CD7229ACE03200F961DF /* ContrastFilterKernal.metal */,
 			);
 			path = Filter;
 			sourceTree = "<group>";
@@ -301,7 +307,9 @@
 				508BB1F72936390700B3530E /* CameraButtonView.swift in Sources */,
 				50D9ECDA29757CA5000833A7 /* GrayscaleFilterKernel.metal in Sources */,
 				50729AF92991265C001E5CD1 /* ThresholdFilterKernel.metal in Sources */,
+				5062CD7329ACE03200F961DF /* ContrastFilterKernal.metal in Sources */,
 				50E8777529225BEF00604757 /* Persistence.swift in Sources */,
+				5062CD7129ACE02200F961DF /* ContrastFilter.swift in Sources */,
 				50729AF729912648001E5CD1 /* ThresholdFilter.swift in Sources */,
 				50E8777829225BEF00604757 /* Frame.xcdatamodeld in Sources */,
 				508C4C0E297FF3F8003ADCDD /* BrightnessFilter.swift in Sources */,

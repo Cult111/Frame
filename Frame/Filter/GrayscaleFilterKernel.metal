@@ -14,8 +14,8 @@ extern "C" {
   namespace coreimage {
     // KERNEL GOES HERE
       float4 grayscaleFilterKernel(sample_t s, float inputGrayscaleFactor) { //1
-        float gray = (s.r + s.g + s.b) / 3/inputGrayscaleFactor;      //2
-        return float4(gray, gray, gray, s.a);    //3
+        float gray = (s.r + s.g + s.b) / 3;      //2
+        return float4(gray, gray, gray, s.a/inputGrayscaleFactor);    //3
       }
   }
 }

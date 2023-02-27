@@ -16,14 +16,17 @@ struct ContentView: View {
 
     @State private var image: Image?
     @State private var brightnessFactor: Float = 0
-    @State private var grayscaleFactor: Float = 0
+    @State private var contrastFactor: Float = 0
     
     @State private var showingImagePicker = false
     @State private var inputImage: UIImage?
     @State private var processedImage: UIImage?
     
     @State private var currentFilter: CIFilter = BrightnessFilter()
-
+    @State private var brightnessFilter: CIFilter = BrightnessFilter()
+    @State private var grayscaleFilter: CIFilter = GrayscaleFilter()
+    @State private var contrastFilter: CIFilter = ContrastFilter()
+    
     let context = CIContext()
     
     @State private var showingFilterSheets = false
@@ -50,20 +53,17 @@ struct ContentView: View {
                 }
                 VStack{
                     Text("Brightness")
-                    Slider(value: $brightnessFactor, in: -1...1)
+                    Slider(value: $brightnessFactor, in: -0.3...0.3)
                         .onChange(of: brightnessFactor){ _ in setFilter(BrightnessFilter())}
                         .onChange(of: brightnessFactor){ _ in applyProcessing()}
-                    Text("Grayscale")
-                    Slider(value: $grayscaleFactor, in: 0...1)
-                        .onChange(of: grayscaleFactor){ _ in setFilter(GrayscaleFilter())}
-                        .onChange(of: grayscaleFactor){ _ in applyProcessing()}
+                    Text("Contrast")
+                    Slider(value: $contrastFactor, in: -150...150)
+                        .onChange(of: contrastFactor){ _ in setFilter(ContrastFilter())}
+                        .onChange(of: contrastFactor){ _ in applyProcessing()}
                 }
                 .padding(.vertical)
                 
                 HStack{
-                    Button("Change Filter"){
-                        showingFilterSheets = true
-                    }
                     Spacer()
                     
                     Button("Save", action: save)
@@ -75,62 +75,13 @@ struct ContentView: View {
             .sheet(isPresented: $showingImagePicker){
                 ImagePicker(image: $inputImage)
             }
-            .confirmationDialog("Select a filter", isPresented: $showingFilterSheets){
-                // Grayscale is a filter without a value that can be set
-                Button("Grayscale"){
-                    guard let inputImage = inputImage else { return }
-                    let beginImage = CIImage(image: inputImage)
-                    
-                    
-                    let filter = GrayscaleFilter()
-                    filter.inputImage = beginImage
-                    
-                    guard let outputImage = filter.outputImage else { return }
-                    if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
-                        let uiImage = UIImage(cgImage: cgimg)
-                        image = Image(uiImage: uiImage )
-                        processedImage = uiImage
-                    }}
-                Button("BrightnessFilter"){
-                    guard let inputImage = inputImage else { return }
-                    let beginImage = CIImage(image: inputImage)
-                    
-                    let filter = BrightnessFilter()
-                    filter.inputImage = beginImage
-                    filter.inputBrightnessFactor = brightnessFactor
-                    
-                    guard let outputImage = filter.outputImage else { return }
-                    if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
-                        let uiImage = UIImage(cgImage: cgimg)
-                        image = Image(uiImage: uiImage )
-                        processedImage = uiImage
-                    }}
-                Button("ThresholdFilter"){
-                    guard let inputImage = inputImage else { return }
-                    let beginImage = CIImage(image: inputImage)
-                    
-                    let filter = ThresholdFilter()
-                    filter.inputImage = beginImage
-                    filter.inputThresholdFactor = 1
-                    
-
-                    guard let outputImage = filter.outputImage else { return }
-                    if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
-                        let uiImage = UIImage(cgImage: cgimg)
-                        image = Image(uiImage: uiImage )
-                        processedImage = uiImage
-                    }
-                }
-                Button("Cancel", role: .cancel) { }
-                
-            }
         }
     }
     
     func loadImage(){
         guard let inputImage = inputImage else { return }
         let beginImage = CIImage(image: inputImage)
-        currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
+//        currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
 
         applyProcessing()
     }
@@ -155,11 +106,21 @@ struct ContentView: View {
         if inputKeys.contains("inputBrightnessFactor"){
             currentFilter.setValue(brightnessFactor, forKey: "inputBrightnessFactor")
         }
-        if inputKeys.contains("inputGrayscaleFactor"){
-            currentFilter.setValue(grayscaleFactor, forKey: "inputGrayscaleFactor")
+        if inputKeys.contains("inputContrastFactor"){
+            currentFilter.setValue(contrastFactor, forKey: "inputContrastFactor")
+//            currentFilter.outputImage?.applyingFilter("BrightnessFilter", parameters: ["inputBrightnessFactor" : brightnessFactor])
         }
-            
-        guard let outputImage = currentFilter.outputImage else { return }
+        
+// chaning all filter together
+        guard let inputImage = inputImage else { return }
+        let beginImage = CIImage(image: inputImage)
+        contrastFilter.setValue(beginImage, forKey: kCIInputImageKey)
+        contrastFilter.setValue(contrastFactor, forKey: "inputContrastFactor")
+        guard var outputImage = contrastFilter.outputImage else { return }
+        brightnessFilter.setValue(outputImage, forKey: kCIInputImageKey)
+        brightnessFilter.setValue(brightnessFactor, forKey: "inputBrightnessFactor")
+        outputImage = brightnessFilter.outputImage!
+        
         //converting the UIImage to SwiftUi Image, so it can be displayed
         if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
             let uiImage = UIImage(cgImage: cgimg)
