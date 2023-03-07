@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var image: Image?
     @State private var brightnessFactor: Float = 0
     @State private var contrastFactor: Float = 0
+    @State private var shadowFactor: Float = 0
     
     @State private var showingImagePicker = false
     @State private var inputImage: UIImage?
@@ -26,6 +27,7 @@ struct ContentView: View {
     @State private var brightnessFilter: CIFilter = BrightnessFilter()
     @State private var grayscaleFilter: CIFilter = GrayscaleFilter()
     @State private var contrastFilter: CIFilter = ContrastFilter()
+    @State private var shadowFilter: CIFilter = ShadowFilter()
     
     let context = CIContext()
     
@@ -60,6 +62,10 @@ struct ContentView: View {
                     Slider(value: $contrastFactor, in: -150...150)
                         .onChange(of: contrastFactor){ _ in setFilter(ContrastFilter())}
                         .onChange(of: contrastFactor){ _ in applyProcessing()}
+                    Text("Shadows")
+                    Slider(value: $shadowFactor, in: -15...15)
+                        .onChange(of: shadowFactor){ _ in setFilter(ContrastFilter())}
+                        .onChange(of: shadowFactor){ _ in applyProcessing()}
                 }
                 .padding(.vertical)
                 
@@ -108,7 +114,6 @@ struct ContentView: View {
         }
         if inputKeys.contains("inputContrastFactor"){
             currentFilter.setValue(contrastFactor, forKey: "inputContrastFactor")
-//            currentFilter.outputImage?.applyingFilter("BrightnessFilter", parameters: ["inputBrightnessFactor" : brightnessFactor])
         }
         
 // chaning all filter together
@@ -116,10 +121,16 @@ struct ContentView: View {
         let beginImage = CIImage(image: inputImage)
         contrastFilter.setValue(beginImage, forKey: kCIInputImageKey)
         contrastFilter.setValue(contrastFactor, forKey: "inputContrastFactor")
-        guard var outputImage = contrastFilter.outputImage else { return }
-        brightnessFilter.setValue(outputImage, forKey: kCIInputImageKey)
+        
+        guard var contrastImage = contrastFilter.outputImage else { return }
+        brightnessFilter.setValue(contrastImage, forKey: kCIInputImageKey)
         brightnessFilter.setValue(brightnessFactor, forKey: "inputBrightnessFactor")
-        outputImage = brightnessFilter.outputImage!
+ 
+        guard var outputImage = brightnessFilter.outputImage else { return }
+        shadowFilter.setValue(outputImage, forKey: kCIInputImageKey)
+        shadowFilter.setValue(shadowFactor, forKey: "inputShadowFactor")
+        outputImage = shadowFilter.outputImage!
+        
         
         //converting the UIImage to SwiftUi Image, so it can be displayed
         if let cgimg = context.createCGImage( outputImage, from: outputImage.extent){
